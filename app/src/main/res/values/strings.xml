@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Växjo Bicycle Guide</string>
+    <string name="title_section1">Map</string>
+    <string name="title_section2">Routes</string>
+    <string name="action_about">About</string>
+
+</resources>
