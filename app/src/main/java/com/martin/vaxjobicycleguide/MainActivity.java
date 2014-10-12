@@ -40,6 +40,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        // This line is supposed to help with the black window caused by the mapfragment inside the viewpager
+        //https://code.google.com/p/gmaps-api-issues/issues/detail?id=4639
+        mViewPager.requestTransparentRegion(mViewPager);
+
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
