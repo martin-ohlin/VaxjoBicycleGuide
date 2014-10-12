@@ -8,7 +8,7 @@ public class BikeApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        Parse.enableLocalDatastore(this);
+        //Parse.enableLocalDatastore(this);
         Parse.initialize(this, "5CRPyrJBVJACJSfINFZq741rNsCXnZbxXiVjT8EB", "sydCG04vI4TpGW2qvL7yeNUwJHLFlzfd6cpCVp5g");
     }
 }
