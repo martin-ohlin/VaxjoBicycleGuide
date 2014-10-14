@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <ImageView
+        android:id="@+id/list_item_route_banner_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@null" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/overlay_bg"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/list_item_route_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textAppearance="?android:textAppearanceMediumInverse"
+            tools:text="10,2km" />
+
+        <TextView
+            android:id="@+id/list_item_route_difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/list_item_route_length"
+            android:layout_toLeftOf="@id/list_item_route_length"
+            android:textAppearance="?android:textAppearanceMediumInverse"
+            android:visibility="invisible"
+            tools:text="Easy" />
+
+        <TextView
+            android:id="@+id/list_item_route_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/list_item_route_length"
+            android:textAppearance="?android:textAppearanceLargeInverse"
+            tools:text="Notteryd" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

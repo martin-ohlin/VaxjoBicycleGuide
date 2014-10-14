@@ -5,5 +5,8 @@
     <string name="title_section1">Map</string>
     <string name="title_section2">Routes</string>
     <string name="action_about">About</string>
+    <string name="title_activity_route_information">RouteInformationActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
