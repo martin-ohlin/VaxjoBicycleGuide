@@ -84,7 +84,7 @@ public class Route implements Parcelable {
         dest.writeValue(this.banner);
         dest.writeValue(this.description);
         dest.writeValue(this.distance);
-        dest.writeValue(this.finish); Den här går inte att skriva
+        dest.writeValue(this.finish);
         dest.writeValue(this.gravel);
         dest.writeValue(this.name);
         dest.writeValue(this.photos);
