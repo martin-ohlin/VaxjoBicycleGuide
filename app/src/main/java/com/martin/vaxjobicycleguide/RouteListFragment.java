@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 public class RouteListFragment extends ListFragment{
 
@@ -58,15 +61,69 @@ public class RouteListFragment extends ListFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_route_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_route_list, container, false);
+
+        ListView listview = (ListView) view.findViewById(android.R.id.list);
+
+        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int mLastFirstVisibleItem = 0;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                final int currentFirstVisibleItem = view.getFirstVisiblePosition();
+
+                if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                    getActivity().getActionBar().hide();
+                } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                    getActivity().getActionBar().show();
+                }
+
+                mLastFirstVisibleItem = currentFirstVisibleItem;
+            }
+        });
+
+        // We can only get the height of the actionbar after the layout has been performed
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                // TODO: There are some rumours out there saying that the headers must be added before the
+                // adapter is set on the listview. Investigate and act on this.
+
+                TextView headerView = new TextView(getActivity());
+                // For some reason there is an empty space between the header and the first element.
+                // Even if header dividers are disabled. So remove the extra divider space.
+                // https://code.google.com/p/android/issues/detail?id=28701
+                // http://stackoverflow.com/questions/10119132/empty-space-between-listview-header-and-first-item
+                int height = getActivity().getActionBar().getHeight() - getListView().getDividerHeight();
+                headerView.setHeight(height);
+                Log.d("Actionbar height", Integer.toString(getActivity().getActionBar().getHeight()));
+                headerView.setText("Something");
+                headerView.setPadding(0,0,0,0);
+
+                getListView().addHeaderView(headerView);
+            }
+        });
+
+        return view;
     }
 
     private class RouteArrayAdapter extends ArrayAdapter<Route> {
         private final Context mContext;
+        private final int imageWidth;
 
         public RouteArrayAdapter(Context context, int resource, List<Route> objects) {
             super(context, resource, objects);
             this.mContext = context;
+            final int width = context.getResources().getDisplayMetrics().widthPixels;
+            final int height = context.getResources().getDisplayMetrics().heightPixels;
+            // Take the largest so that it will fit both in portrait and landscape mode
+            this.imageWidth = width >= height ? width : height;
         }
 
         @Override
@@ -88,10 +145,16 @@ public class RouteListFragment extends ListFragment{
             TextView lengthTextView = (TextView) rowView.findViewById(R.id.list_item_route_length);
             lengthTextView.setText(route.distance);
 
+            String urlForPreScaledBanner = String.format("http://www.vaxjobicycleguide.se/php/timthumb.php?src=%1$s&w=%2$d", route.banner, imageWidth);
+
             ImageView bannerImageView = (ImageView) rowView.findViewById(R.id.list_item_route_banner_image);
+            int maxSide = bannerImageView.getWidth() > bannerImageView.getHeight() ? bannerImageView.getWidth() : bannerImageView.getHeight();
             Picasso.with(mContext)
-                    .load(route.banner)
+                    .load(urlForPreScaledBanner)
+                    // https://github.com/square/picasso/issues/226
+                    // TODO: Calculate correct values here
                     .fit()
+                    //.resize(400, 400) // Center crop is supposed to make this keep the aspect ratio
                     .centerCrop()
                     .into(bannerImageView);
 
