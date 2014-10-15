@@ -16,5 +16,6 @@
         android:dividerHeight="10.0dp"
         android:drawSelectorOnTop="true"
         android:paddingBottom="10dp"
-        android:paddingTop="10dp"/>
+        android:paddingTop="10dp"
+        android:scrollbars="none"/>
 </LinearLayout>

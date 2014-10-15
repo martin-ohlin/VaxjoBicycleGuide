@@ -1,8 +1,10 @@
 package com.martin.vaxjobicycleguide;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,36 +29,63 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 public class RouteListFragment extends ListFragment{
+    private static final String EXTRA_SAVED_DATA = "EXTRA_SAVED_DATA";
 
     ArrayAdapter<Route> mAdapter;
+    ArrayList<Route> mRouteArray;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
-        // Means we will be called twice, once for the cache and once for the network
-        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
-        query.whereEqualTo("Active", true);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                if (e == null) {
-                    ArrayList<Route> routeArray = new ArrayList<Route>(parseObjects.size());
-                    for (ParseObject parseRoute: parseObjects) {
-                        routeArray.add(new Route(parseRoute));
-                    }
+        Bundle bundle = savedInstanceState;
+        if (bundle == null || bundle.isEmpty())
+            bundle = getArguments();
 
-                    mAdapter = new RouteArrayAdapter(getActivity(), R.layout.list_item_route, routeArray);
-                    setListAdapter(mAdapter);
-                } else {
-                    // something went wrong
-                    Log.d("Växjö Bicycle Guide", e.toString());
+        if (bundle != null) {
+            this.mRouteArray = bundle.getParcelableArrayList(EXTRA_SAVED_DATA);
+        } else {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
+            // Means we will be called twice, once for the cache and once for the network
+            query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
+            //query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);
+            query.whereEqualTo("Active", true);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        mRouteArray = new ArrayList<Route>(parseObjects.size());
+                        for (ParseObject parseRoute: parseObjects) {
+                            mRouteArray.add(new Route(parseRoute));
+                        }
+
+                        mAdapter = new RouteArrayAdapter(getActivity(), R.layout.list_item_route, mRouteArray);
+                        setListAdapter(mAdapter);
+                    } else {
+                        // something went wrong
+                        Log.d("Växjö Bicycle Guide", e.toString());
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (mRouteArray != null) {
+            this.mAdapter = new RouteArrayAdapter(getActivity(), R.layout.list_item_route, mRouteArray);
+            setListAdapter(this.mAdapter);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(EXTRA_SAVED_DATA, mRouteArray);
     }
 
     @Override
@@ -102,10 +131,7 @@ public class RouteListFragment extends ListFragment{
                 // http://stackoverflow.com/questions/10119132/empty-space-between-listview-header-and-first-item
                 int height = getActivity().getActionBar().getHeight() - getListView().getDividerHeight();
                 headerView.setHeight(height);
-                Log.d("Actionbar height", Integer.toString(getActivity().getActionBar().getHeight()));
                 headerView.setText("Something");
-                headerView.setPadding(0,0,0,0);
-
                 getListView().addHeaderView(headerView);
             }
         });
@@ -151,10 +177,7 @@ public class RouteListFragment extends ListFragment{
             int maxSide = bannerImageView.getWidth() > bannerImageView.getHeight() ? bannerImageView.getWidth() : bannerImageView.getHeight();
             Picasso.with(mContext)
                     .load(urlForPreScaledBanner)
-                    // https://github.com/square/picasso/issues/226
-                    // TODO: Calculate correct values here
                     .fit()
-                    //.resize(400, 400) // Center crop is supposed to make this keep the aspect ratio
                     .centerCrop()
                     .into(bannerImageView);
 
@@ -166,7 +189,7 @@ public class RouteListFragment extends ListFragment{
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Route route = mAdapter.getItem(position);
+        Route route = mAdapter.getItem(position - 1);
         Intent intent = new Intent(getActivity(), RouteInformationActivity.class);
         intent.putExtra(RouteInformationActivity.EXTRA_ROUTE, route);
         startActivity(intent);
