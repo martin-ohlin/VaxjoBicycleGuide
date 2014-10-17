@@ -35,6 +35,13 @@
 
     </style>
 
+    <style name="Theme.Vaxjobikeguide.TranslucentActionBar" />
+
+    <style name="Theme.Vaxjobikeguide.TranslucentActionBar.Overlay">
+        <item name="android:actionBarStyle">@style/ActionBar.Transparent.Vaxjobikeguide</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
     <style name="ActionBar.Solid.Vaxjobikeguide" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ab_solid_vaxjobikeguide</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_vaxjobikeguide</item>

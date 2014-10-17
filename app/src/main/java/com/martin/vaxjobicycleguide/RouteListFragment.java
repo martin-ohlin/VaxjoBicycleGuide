@@ -174,7 +174,6 @@ public class RouteListFragment extends ListFragment{
             String urlForPreScaledBanner = String.format("http://www.vaxjobicycleguide.se/php/timthumb.php?src=%1$s&w=%2$d", route.banner, imageWidth);
 
             ImageView bannerImageView = (ImageView) rowView.findViewById(R.id.list_item_route_banner_image);
-            int maxSide = bannerImageView.getWidth() > bannerImageView.getHeight() ? bannerImageView.getWidth() : bannerImageView.getHeight();
             Picasso.with(mContext)
                     .load(urlForPreScaledBanner)
                     .fit()
@@ -189,6 +188,7 @@ public class RouteListFragment extends ListFragment{
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
+        // The list has a header, offset adapter position by 1
         Route route = mAdapter.getItem(position - 1);
         Intent intent = new Intent(getActivity(), RouteInformationActivity.class);
         intent.putExtra(RouteInformationActivity.EXTRA_ROUTE, route);

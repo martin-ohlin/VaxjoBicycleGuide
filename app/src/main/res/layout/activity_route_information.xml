@@ -1,53 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.martin.vaxjobicycleguide.ui.NotifyingScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="wrap_content"
+    tools:context=".RouteInformationActivity">
 
-    <ImageView
-        android:id="@+id/list_item_route_banner_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@null" />
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/overlay_bg"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/list_item_route_length"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/list_item_route_banner_image"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textAppearance="?android:textAppearanceMediumInverse"
-            tools:text="10,2km" />
+            android:background="#aaaaaa"
+            android:contentDescription="@null"
+            android:minHeight="200dp" />
 
-        <TextView
-            android:id="@+id/list_item_route_difficulty"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/list_item_route_length"
-            android:layout_toLeftOf="@id/list_item_route_length"
-            android:textAppearance="?android:textAppearanceMediumInverse"
-            android:visibility="invisible"
-            tools:text="Easy" />
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp">
 
-        <TextView
-            android:id="@+id/list_item_route_name"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/description_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="Beskrivning"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/description_label"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:textAppearanceSmall"
+                tools:text="Beskrivning asdf Beskrivning asdf Beskrivning asdf asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/list_item_route_length"
-            android:textAppearance="?android:textAppearanceLargeInverse"
-            tools:text="Notteryd" />
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="10dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Passar för"
+                android:textColor="@android:color/tertiary_text_light" />
 
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/type_label"
+                android:layout_marginLeft="120dp"
+                tools:text="Mountainbike" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/length_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/type_label"
+                android:text="Längd"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/length_label"
+                android:layout_alignLeft="@id/type"
+                tools:text="12.1km" />
+
+            <TextView
+                android:id="@+id/rating_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/length_label"
+                android:text="Svårighet"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/rating_label"
+                android:layout_alignLeft="@id/type"
+                tools:text="Medel" />
+
+            <TextView
+                android:id="@+id/signs_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rating_label"
+                android:text="Markerad"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/signs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/signs_label"
+                android:layout_alignLeft="@id/type"
+                tools:text="Turen saknar skyltning" />
+
+            <TextView
+                android:id="@+id/terrain_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/signs_label"
+                android:text="Asfalt/Grus/Stig"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/terrain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/terrain_label"
+                android:layout_alignLeft="@id/type"
+                tools:text="16% / 6% / 78%" />
+
+            <GridView
+                android:id="@+id/image_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/terrain_label"
+                android:layout_marginTop="10dp"
+                android:columnWidth="90dp"
+                android:gravity="center"
+                android:horizontalSpacing="10dp"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp" />
+
+            <TextView
+                android:id="@+id/created_by_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_gridview"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:textAppearanceSmall"
+                tools:text="Den här turen är skapad av..." />
+        </RelativeLayout>
+    </LinearLayout>
+</com.martin.vaxjobicycleguide.ui.NotifyingScrollView>

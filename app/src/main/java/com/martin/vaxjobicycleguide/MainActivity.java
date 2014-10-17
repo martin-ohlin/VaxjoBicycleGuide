@@ -29,6 +29,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
 
         // To be able to hide/animate the actionbar later on
+        // Could be put in the theme as <item name="android:windowActionBarOverlay">true</item>
+        // TODO: Move it into the theme to remove potential flickering on launch
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
         setContentView(R.layout.activity_main);
