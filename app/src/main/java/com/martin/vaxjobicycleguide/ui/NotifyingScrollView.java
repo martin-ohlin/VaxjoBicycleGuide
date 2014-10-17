@@ -41,4 +41,5 @@ public class NotifyingScrollView extends ScrollView {
         mOnScrollChangedListener = listener;
     }
 
+    //TODO: Stoppa in hantering för overscroll som Cyrill nämner
 }

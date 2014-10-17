@@ -59,9 +59,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Theme.Vaxjobikeguide.TranslucentActionBar.Overlay"
-            android:name="com.martin.vaxjobicycleguide.RouteInformationActivity"
-            android:label="@string/title_activity_route_information" >
+            android:name="com.martin.vaxjobicycleguide.RouteInformationActivity" >
         </activity>
     </application>
 

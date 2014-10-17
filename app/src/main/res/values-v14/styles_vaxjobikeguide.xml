@@ -33,6 +33,9 @@
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Vaxjobikeguide.Widget</item>
 
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
     </style>
 
     <style name="Theme.Vaxjobikeguide.TranslucentActionBar" />

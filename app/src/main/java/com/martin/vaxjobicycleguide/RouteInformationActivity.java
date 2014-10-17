@@ -31,6 +31,9 @@ public class RouteInformationActivity extends Activity {
 
         setContentView(R.layout.activity_route_information);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
+
         Bundle bundle = savedInstanceState;
         if (bundle == null || bundle.isEmpty())
             bundle = getIntent().getExtras();
@@ -52,6 +55,17 @@ public class RouteInformationActivity extends Activity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             mActionBarBackgroundDrawable.setCallback(mDrawableCallback);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener = new NotifyingScrollView.OnScrollChangedListener() {
@@ -87,6 +101,8 @@ public class RouteInformationActivity extends Activity {
     }
 
     private void updateInformation() {
+        setTitle(mRoute.name);
+
         final int width = getResources().getDisplayMetrics().widthPixels;
         final int height = getResources().getDisplayMetrics().heightPixels;
         // Take the largest so that it will fit both in portrait and landscape mode
