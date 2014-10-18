@@ -41,5 +41,28 @@ public class NotifyingScrollView extends ScrollView {
         mOnScrollChangedListener = listener;
     }
 
-    //TODO: Stoppa in hantering för overscroll som Cyrill nämner
+    private boolean mIsOverScrollEnabled = true;
+
+    public void setOverScrollEnabled(boolean enabled) {
+        mIsOverScrollEnabled = enabled;
+    }
+
+    public boolean isOverScrollEnabled() {
+        return mIsOverScrollEnabled;
+    }
+
+    @Override
+    protected boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY,
+                                   int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
+        return super.overScrollBy(
+                deltaX,
+                deltaY,
+                scrollX,
+                scrollY,
+                scrollRangeX,
+                scrollRangeY,
+                mIsOverScrollEnabled ? maxOverScrollX : 0,
+                mIsOverScrollEnabled ? maxOverScrollY : 0,
+                isTouchEvent);
+    }
 }

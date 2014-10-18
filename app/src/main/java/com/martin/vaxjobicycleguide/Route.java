@@ -7,6 +7,10 @@ import android.util.Log;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class Route implements Parcelable {
 //    public ParseGeoPoint finish;
     public Double gravel;
     public String name;
-//    public List<String> photos;
+    public ArrayList<String> photos;
     public Integer rating;
     public String signs;
 //    public ParseGeoPoint start;
@@ -38,7 +42,19 @@ public class Route implements Parcelable {
         //this.finish = parseRoute.getParseGeoPoint("Finish");
         this.gravel = parseRoute.getDouble("Gravel");
         this.name = parseRoute.getString("Name");
-        //this.photos = parseRoute.getList("photos");
+
+        JSONArray photosJSONArray = parseRoute.getJSONArray("Photos");
+        if (photosJSONArray != null) {
+            this.photos = new ArrayList<String>(photosJSONArray.length());
+            for (int i=0; i<photosJSONArray.length(); i++) {
+                try {
+                    photos.add(photosJSONArray.getString(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         this.rating = parseRoute.getInt("Rating"); // Converted
         this.signs = parseRoute.getString("Signs");
         //this.start = parseRoute.getParseGeoPoint("Start");
@@ -50,14 +66,6 @@ public class Route implements Parcelable {
     }
 
     private Route(Parcel in) {
-        /*
-        Log.d("Fuck", Double.toString((Double)in.readValue(Double.class.getClassLoader())));
-        Log.d("Fuck", Double.toString((Double)in.readValue(Double.class.getClassLoader())));
-        Log.d("Fuck", Double.toString((Double)in.readValue(Double.class.getClassLoader())));
-        Log.d("Fuck", in.readString());
-        Log.d("Fuck", Double.toString((Double)in.readValue(Double.class.getClassLoader())));
-*/
-
         this.asphalt = (Double) in.readValue(Double.class.getClassLoader());
         this.banner = in.readString();
         this.description = in.readString();
@@ -65,7 +73,7 @@ public class Route implements Parcelable {
         //this.finish = (ParseGeoPoint) in.readValue(ParseGeoPoint.class.getClassLoader());
         this.gravel = (Double) in.readValue(Double.class.getClassLoader());
         this.name = in.readString();
-        //this.photos = (List<String>) in.readValue(List.class.getClassLoader());
+        this.photos = in.readArrayList(String.class.getClassLoader());
         this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
         this.signs = in.readString();
         //this.start = (ParseGeoPoint) in.readValue(ParseGeoPoint.class.getClassLoader());
@@ -83,14 +91,6 @@ public class Route implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        /*
-        dest.writeValue(22.6);
-        dest.writeValue(22.1);
-        dest.writeValue(22.0);
-        dest.writeString("Test");
-        dest.writeValue(22.0);
-        */
-
         dest.writeValue(asphalt);
         dest.writeString(banner);
         dest.writeString(description);
@@ -99,7 +99,7 @@ public class Route implements Parcelable {
 //        dest.writeValue(this.finish);
         dest.writeValue(this.gravel);
         dest.writeString(this.name);
-//        dest.writeValue(this.photos);
+        dest.writeList(this.photos);
         dest.writeValue(this.rating);
         dest.writeString(this.signs);
 //        dest.writeValue(this.start);

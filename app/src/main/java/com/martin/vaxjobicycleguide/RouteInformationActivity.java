@@ -1,21 +1,30 @@
 package com.martin.vaxjobicycleguide;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.martin.vaxjobicycleguide.ui.NotifyingScrollView;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 public class RouteInformationActivity extends Activity {
@@ -51,10 +60,17 @@ public class RouteInformationActivity extends Activity {
         getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 
         ((NotifyingScrollView) findViewById(R.id.scroll_view)).setOnScrollChangedListener(mOnScrollChangedListener);
+        ((NotifyingScrollView) findViewById(R.id.scroll_view)).setOverScrollEnabled(false);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             mActionBarBackgroundDrawable.setCallback(mDrawableCallback);
         }
+
+        Gallery imageGallery = (Gallery) findViewById(R.id.image_gallery);
+        if (mRoute.photos != null && mRoute.photos.size() != 0)
+            imageGallery.setAdapter(new PhotoArrayAdapter(this, R.layout.list_item_photo, this.mRoute.photos));
+        else
+            imageGallery.setVisibility(View.GONE);
     }
 
     @Override
@@ -123,5 +139,42 @@ public class RouteInformationActivity extends Activity {
         ((TextView)findViewById(R.id.signs)).setText(this.mRoute.signs);
         //((TextView)findViewById(R.id.terrain)).setText();
         ((TextView)findViewById(R.id.created_by_description)).setText("Den här turen är skapad av...");
+    }
+
+    private class PhotoArrayAdapter extends ArrayAdapter<String> {
+        private final Context mContext;
+        private final int imageWidth;
+
+        public PhotoArrayAdapter(Context context, int resource, List<String> objects) {
+            super(context, resource, objects);
+            this.mContext = context;
+            final int width = context.getResources().getDisplayMetrics().widthPixels;
+            final int height = context.getResources().getDisplayMetrics().heightPixels;
+            // Take the largest so that it will fit both in portrait and landscape mode
+            this.imageWidth = width >= height ? width : height;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            if (rowView == null) {
+                LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                rowView = inflater.inflate(R.layout.list_item_photo, parent, false);
+                //((ImageView) rowView).getLayoutParams().width = imageWidth - 100;
+            }
+
+            String imageUrl = getItem(position);
+
+            String urlForPreScaledBanner = String.format("http://www.vaxjobicycleguide.se/php/timthumb.php?src=%1$s&w=%2$d", imageUrl, imageWidth);
+
+            ImageView bannerImageView = (ImageView) rowView.findViewById(R.id.list_item_photo);
+            Picasso.with(mContext)
+                    .load(urlForPreScaledBanner)
+                    .fit()
+                    .centerInside()
+                    .into(bannerImageView);
+
+            return rowView;
+        }
     }
 }
