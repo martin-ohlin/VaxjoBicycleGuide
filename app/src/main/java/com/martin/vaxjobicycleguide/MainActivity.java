@@ -125,8 +125,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                // TODO: Investigate https://github.com/osmdroid/osmdroid
-                return new MapFragment();
+                return new OsmFragment();
             } else {
                 return  new RouteListFragment();
             }
