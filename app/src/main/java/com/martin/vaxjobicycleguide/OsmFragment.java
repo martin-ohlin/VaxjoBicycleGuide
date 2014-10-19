@@ -8,6 +8,7 @@ import android.location.LocationManager;;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class OsmFragment extends Fragment{
                 mMapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 TextView headerView = (TextView) getView().findViewById(R.id.actionbar_header_overlay_buffer);
-                int height = getActivity().getActionBar().getHeight();
+                int height = ((ActionBarActivity)getActivity()).getSupportActionBar().getHeight();
                 headerView.setHeight(height);
             }
         });

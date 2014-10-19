@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
-public class RouteInformationActivity extends Activity {
+public class RouteInformationActivity extends ActionBarActivity {
 
     public static final String EXTRA_ROUTE = "EXTRA_ROUTE";
 
@@ -40,8 +41,8 @@ public class RouteInformationActivity extends Activity {
 
         setContentView(R.layout.activity_route_information);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Bundle bundle = savedInstanceState;
         if (bundle == null || bundle.isEmpty())
@@ -57,7 +58,7 @@ public class RouteInformationActivity extends Activity {
         //mActionBarBackgroundDrawable = new ColorDrawable(android.R.color.black);
         mActionBarBackgroundDrawable.setAlpha(0);
 
-        getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
+        getSupportActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 
         ((NotifyingScrollView) findViewById(R.id.scroll_view)).setOnScrollChangedListener(mOnScrollChangedListener);
         ((NotifyingScrollView) findViewById(R.id.scroll_view)).setOverScrollEnabled(false);
@@ -86,7 +87,7 @@ public class RouteInformationActivity extends Activity {
 
     private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener = new NotifyingScrollView.OnScrollChangedListener() {
         public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-            final int headerHeight = findViewById(R.id.list_item_route_banner_image).getHeight() - getActionBar().getHeight();
+            final int headerHeight = findViewById(R.id.list_item_route_banner_image).getHeight() - getSupportActionBar().getHeight();
             final float ratio = (float) Math.min(Math.max(t, 0), headerHeight) / headerHeight;
             final int newAlpha = (int) (ratio * 255);
             mActionBarBackgroundDrawable.setAlpha(newAlpha);
@@ -97,7 +98,7 @@ public class RouteInformationActivity extends Activity {
     private Drawable.Callback mDrawableCallback = new Drawable.Callback() {
         @Override
         public void invalidateDrawable(Drawable who) {
-            getActionBar().setBackgroundDrawable(who);
+            getSupportActionBar().setBackgroundDrawable(who);
         }
 
         @Override

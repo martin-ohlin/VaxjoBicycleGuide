@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,8 +61,10 @@ public class RouteListFragment extends ListFragment{
                             mRouteArray.add(new Route(parseRoute));
                         }
 
-                        mAdapter = new RouteArrayAdapter(getActivity(), R.layout.list_item_route, mRouteArray);
-                        setListAdapter(mAdapter);
+                        if (mRouteArray.size() != 0) {
+                            mAdapter = new RouteArrayAdapter(getActivity(), R.layout.list_item_route, mRouteArray);
+                            setListAdapter(mAdapter);
+                        }
                     } else {
                         // something went wrong
                         Log.d("Växjö Bicycle Guide", e.toString());
@@ -106,9 +109,9 @@ public class RouteListFragment extends ListFragment{
                 final int currentFirstVisibleItem = view.getFirstVisiblePosition();
 
                 if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                    getActivity().getActionBar().hide();
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().hide();
                 } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                    getActivity().getActionBar().show();
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().show();
                 }
 
                 mLastFirstVisibleItem = currentFirstVisibleItem;
@@ -129,7 +132,7 @@ public class RouteListFragment extends ListFragment{
                 // Even if header dividers are disabled. So remove the extra divider space.
                 // https://code.google.com/p/android/issues/detail?id=28701
                 // http://stackoverflow.com/questions/10119132/empty-space-between-listview-header-and-first-item
-                int height = getActivity().getActionBar().getHeight() - getListView().getDividerHeight();
+                int height = ((ActionBarActivity)getActivity()).getSupportActionBar().getHeight() - getListView().getDividerHeight();
                 headerView.setHeight(height);
                 headerView.setText("Something");
                 getListView().addHeaderView(headerView);
