@@ -48,6 +48,7 @@ public class RouteListFragment extends ListFragment{
             this.mRouteArray = bundle.getParcelableArrayList(EXTRA_SAVED_DATA);
         } else {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
+            query.include("Owner");
             // Means we will be called twice, once for the cache and once for the network
             query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
             //query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ONLY);

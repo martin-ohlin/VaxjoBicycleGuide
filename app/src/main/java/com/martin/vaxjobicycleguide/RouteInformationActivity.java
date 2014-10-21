@@ -139,7 +139,7 @@ public class RouteInformationActivity extends ActionBarActivity {
         //((TextView)findViewById(R.id.rating)).setText(this.mRoute.rating);
         ((TextView)findViewById(R.id.signs)).setText(this.mRoute.signs);
         //((TextView)findViewById(R.id.terrain)).setText();
-        ((TextView)findViewById(R.id.created_by_description)).setText("Den här turen är skapad av...");
+        ((TextView)findViewById(R.id.created_by_description)).setText(this.mRoute.ownerDescription);
     }
 
     private class PhotoArrayAdapter extends ArrayAdapter<String> {

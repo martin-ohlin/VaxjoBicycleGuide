@@ -33,6 +33,8 @@ public class Route implements Parcelable {
     public Integer type;
     public String gpx;
     public String tcx;
+    public String ownerName;
+    public String ownerDescription;
 
     public Route(ParseObject parseRoute) {
         this.asphalt = parseRoute.getDouble("Asphalt"); // Converted
@@ -62,7 +64,11 @@ public class Route implements Parcelable {
         this.trail = parseRoute.getDouble("Trail");
         this.type = parseRoute.getInt("Type"); // Converted
         this.gpx = parseRoute.getString("gpx");
+        ParseObject owner = parseRoute.getParseObject("Owner");
         this.tcx = parseRoute.getString("tcx");
+        // TODO: Handle the case where there only one of the names contains data
+        this.ownerName = owner.getString("Firstname") + " " + owner.getString("Lastname");
+        this.ownerDescription = owner.getString("Description");
     }
 
     private Route(Parcel in) {
@@ -82,6 +88,8 @@ public class Route implements Parcelable {
         this.type = (Integer) in.readValue(Integer.class.getClassLoader());
         this.gpx = in.readString();
         this.tcx = in.readString();
+        this.ownerName = in.readString();
+        this.ownerDescription = in.readString();
     }
 
     @Override
@@ -108,6 +116,8 @@ public class Route implements Parcelable {
         dest.writeValue(this.type);
         dest.writeString(this.gpx);
         dest.writeString(this.tcx);
+        dest.writeString(this.ownerName);
+        dest.writeString(this.ownerDescription);
     }
 
     public static final Parcelable.Creator<Route> CREATOR
