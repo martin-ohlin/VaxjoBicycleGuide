@@ -4,12 +4,13 @@
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".RouteInformationActivity"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    tools:context=".RouteInformationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
         <FrameLayout
@@ -44,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
-                android:text="Beskrivning"
+                android:text="@string/description"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/tertiary_text_light" />
 
@@ -52,7 +53,6 @@
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/description_label"
                 android:layout_marginTop="10dp"
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="Beskrivning asdf Beskrivning asdf Beskrivning asdf asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning asdf Beskrivning" />
@@ -62,23 +62,23 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="10dp">
 
             <TextView
                 android:id="@+id/type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Passar för"
+                android:text="@string/type"
                 android:textColor="@android:color/tertiary_text_light" />
 
             <TextView
                 android:id="@+id/type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/type_label"
+                android:layout_alignTop="@id/type_label"
                 android:layout_marginLeft="120dp"
                 tools:text="Mountainbike" />
 
@@ -87,15 +87,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/type_label"
-                android:text="Längd"
+                android:text="@string/length"
                 android:textColor="@android:color/tertiary_text_light" />
 
             <TextView
                 android:id="@+id/length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/length_label"
                 android:layout_alignLeft="@id/type"
+                android:layout_alignTop="@id/length_label"
                 tools:text="12.1km" />
 
             <TextView
@@ -103,48 +103,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/length_label"
-                android:text="Svårighet"
+                android:text="@string/rating"
                 android:textColor="@android:color/tertiary_text_light" />
 
             <TextView
                 android:id="@+id/rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/rating_label"
                 android:layout_alignLeft="@id/type"
+                android:layout_alignTop="@id/rating_label"
                 tools:text="Medel" />
-
-            <TextView
-                android:id="@+id/signs_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rating_label"
-                android:text="Markerad"
-                android:textColor="@android:color/tertiary_text_light" />
-
-            <TextView
-                android:id="@+id/signs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/signs_label"
-                android:layout_alignLeft="@id/type"
-                tools:text="Turen saknar skyltning" />
 
             <TextView
                 android:id="@+id/terrain_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/signs_label"
-                android:text="Asfalt/Grus/Stig"
+                android:layout_below="@id/rating_label"
+                android:text="@string/terrain"
                 android:textColor="@android:color/tertiary_text_light" />
 
             <TextView
                 android:id="@+id/terrain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/terrain_label"
                 android:layout_alignLeft="@id/type"
+                android:layout_alignTop="@id/terrain_label"
                 tools:text="16% / 6% / 78%" />
+
+            <TextView
+                android:id="@+id/signs_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/terrain_label"
+                android:text="@string/signs"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <TextView
+                android:id="@+id/signs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/type"
+                android:layout_alignTop="@id/signs_label"
+                tools:text="Turen saknar skyltning" />
         </RelativeLayout>
 
         <Gallery
@@ -156,12 +156,24 @@
         </Gallery>
 
         <TextView
+            android:id="@+id/created_by_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/created_by"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/tertiary_text_light" />
+
+        <TextView
             android:id="@+id/created_by_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:layout_marginTop="10dp"
             android:textAppearance="?android:textAppearanceSmall"
             tools:text="Den här turen är skapad av..." />
 

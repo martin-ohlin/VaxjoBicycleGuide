@@ -8,5 +8,12 @@
     <string name="title_activity_route_information">RouteInformationActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="created_by">Skapad av %1$s</string>
+    <string name="description">Beskrivning</string>
+    <string name="type">Passar för</string>
+    <string name="length">Längd</string>
+    <string name="rating">Svårighet</string>
+    <string name="terrain">Asfalt/Grus/Stig</string>
+    <string name="signs">Markerad</string>
 
 </resources>

@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/actionbar_header_overlay_buffer"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="48dp"
         android:text="Placeholder"/>
 
 </LinearLayout>

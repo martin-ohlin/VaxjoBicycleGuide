@@ -139,6 +139,9 @@ public class RouteInformationActivity extends ActionBarActivity {
         //((TextView)findViewById(R.id.rating)).setText(this.mRoute.rating);
         ((TextView)findViewById(R.id.signs)).setText(this.mRoute.signs);
         //((TextView)findViewById(R.id.terrain)).setText();
+
+        String createdBy = String.format(getResources().getString(R.string.created_by), this.mRoute.ownerName);
+        ((TextView)findViewById(R.id.created_by_name)).setText(createdBy);
         ((TextView)findViewById(R.id.created_by_description)).setText(this.mRoute.ownerDescription);
     }
 
