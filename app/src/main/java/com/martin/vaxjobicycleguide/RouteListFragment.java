@@ -3,8 +3,11 @@ package com.martin.vaxjobicycleguide;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -123,7 +126,12 @@ public class RouteListFragment extends ListFragment{
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    //noinspection deprecation
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
 
                 // TODO: There are some rumours out there saying that the headers must be added before the
                 // adapter is set on the listview. Investigate and act on this.
@@ -192,10 +200,19 @@ public class RouteListFragment extends ListFragment{
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        // The list has a header, offset adapter position by 1
         Route route = mAdapter.getItem(position - 1);
+
+        // The transition will only be visible on v21 and above
+        String transitionName = getString(R.string.transition_route_banner_image);
+        View bannerImageView = v.findViewById(R.id.list_item_route_banner_image);
+        ActivityOptionsCompat options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        bannerImageView,   // The view which starts the transition
+                        transitionName    // The transitionName of the view we’re transitioning to
+                );
+
         Intent intent = new Intent(getActivity(), RouteInformationActivity.class);
         intent.putExtra(RouteInformationActivity.EXTRA_ROUTE, route);
-        startActivity(intent);
+        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
     }
 }

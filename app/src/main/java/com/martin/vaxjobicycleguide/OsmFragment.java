@@ -4,10 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -70,13 +69,18 @@ public class OsmFragment extends Fragment{
         setHardwareAccelerationOff();
 
 
-        Add code for hiding the actionbar as soon as the user scrolls around in the map.
+        //TODO:Add code for hiding the actionbar as soon as the user scrolls around in the map.
 
         // We can only get the height of the actionbar after the layout has been performed
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    //noinspection deprecation
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
 
                 TextView headerView = (TextView) getView().findViewById(R.id.actionbar_header_overlay_buffer);
                 int height = ((ActionBarActivity)getActivity()).getSupportActionBar().getHeight();

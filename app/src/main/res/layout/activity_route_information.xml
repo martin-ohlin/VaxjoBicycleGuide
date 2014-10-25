@@ -23,7 +23,8 @@
                 android:layout_height="wrap_content"
                 android:background="#aaaaaa"
                 android:contentDescription="@null"
-                android:minHeight="200dp" />
+                android:minHeight="200dp"
+                android:transitionName="@string/transition_route_banner_image" />
 
             <View
                 android:layout_width="match_parent"

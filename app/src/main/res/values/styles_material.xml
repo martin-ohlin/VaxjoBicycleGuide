@@ -1,6 +1,9 @@
 <resources>
 
-    <style name="Theme.MyMaterialTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+
         <item name="actionBarTabStyle">@style/ActionBarTabStyle.MyMaterialTheme</item>
 
         <item name="colorPrimary">@color/cyan_500</item>
@@ -8,11 +11,11 @@
         <item name="colorAccent">@color/pink_500</item>
     </style>
 
-    <style name="Theme.MyMaterialTheme.Overlay">
+    <style name="AppTheme.Overlay">
         <item name="windowActionBarOverlay">true</item>
     </style>
 
-    <style name="Theme.MyMaterialTheme.Overlay.WithoutActionBarShadow">
+    <style name="AppTheme.WithoutActionBarShadow">
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>

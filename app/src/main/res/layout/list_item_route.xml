@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:transitionName="@string/transition_route_banner_image" />
 
     <RelativeLayout
         android:layout_width="match_parent"
