@@ -129,6 +129,7 @@ public class RouteInformationActivity extends ActionBarActivity {
         ImageView bannerImageView = (ImageView) findViewById(R.id.list_item_route_banner_image);
         Picasso.with(this)
                 .load(urlForPreScaledBanner)
+                .fit()
                 .centerCrop()
                 .into(bannerImageView);
 

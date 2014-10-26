@@ -113,9 +113,9 @@ public class RouteListFragment extends ListFragment{
                 final int currentFirstVisibleItem = view.getFirstVisiblePosition();
 
                 if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                    ((ActionBarActivity) getActivity()).getSupportActionBar().hide();
+                    ((MainActivity) getActivity()).showActionBar(false);
                 } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                    ((ActionBarActivity) getActivity()).getSupportActionBar().show();
+                    ((MainActivity) getActivity()).showActionBar(true);
                 }
 
                 mLastFirstVisibleItem = currentFirstVisibleItem;

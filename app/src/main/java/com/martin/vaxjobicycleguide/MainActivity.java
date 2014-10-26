@@ -12,12 +12,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private int mViewPagerScrollState = ViewPager.SCROLL_STATE_IDLE;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -49,10 +48,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // If we deviate from the currently visible page, then show the actionbar again.
+                if (positionOffset != 0) {
+                    getSupportActionBar().show();
+                }
+            }
+
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                mViewPagerScrollState = state;
             }
         });
 
@@ -69,6 +81,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
+    public void showActionBar(boolean flag) {
+        if (mViewPagerScrollState != ViewPager.SCROLL_STATE_IDLE)
+            return;
+
+        if (flag) {
+            getSupportActionBar().show();
+        } else {
+            getSupportActionBar().hide();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

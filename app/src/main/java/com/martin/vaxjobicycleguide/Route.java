@@ -2,6 +2,7 @@ package com.martin.vaxjobicycleguide;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.parse.ParseGeoPoint;
@@ -66,8 +67,16 @@ public class Route implements Parcelable {
         this.gpx = parseRoute.getString("gpx");
         ParseObject owner = parseRoute.getParseObject("Owner");
         this.tcx = parseRoute.getString("tcx");
-        // TODO: Handle the case where there only one of the names contains data
-        this.ownerName = owner.getString("Firstname") + " " + owner.getString("Lastname");
+
+        String firstName = owner.getString("Firstname");
+        String lastName = owner.getString("Lastname");
+        if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName))
+            this.ownerName = firstName + " " + lastName;
+        else if (!TextUtils.isEmpty(firstName))
+            this.ownerName = firstName;
+        else if (!TextUtils.isEmpty(lastName))
+            this.ownerName = lastName;
+
         this.ownerDescription = owner.getString("Description");
     }
 

@@ -1,36 +1,29 @@
 package com.martin.vaxjobicycleguide;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.ITileSource;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
-import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.TilesOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class OsmFragment extends Fragment{
     private VaxjoBikeGuideMapView mMapView;
     private MyLocationNewOverlay mLocationOverlay;
+    private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,19 +32,30 @@ public class OsmFragment extends Fragment{
         final View view = inflater.inflate(R.layout.fragment_osm, container, false);
 
         this.mMapView = (VaxjoBikeGuideMapView) view.findViewById(R.id.map_view);
+        this.mHandler = new Handler();
 
         // Add users location overlay
         this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context), this.mMapView);
         this.mMapView.getOverlays().add(this.mLocationOverlay);
 
-       // When the server is up and running we can probably do like this
-        //mMapView.setTileSource(tileSource);
 
-        // Call this method to turn off hardware acceleration at the View level.
-        setHardwareAccelerationOff();
+        //Hides the actionbar for 7 seconds if the user touches the map.
+        //Adds a small delay to the hiding to let the activity detect if this is maybe
+        //a touch that will drag the page away.
+        this.mMapView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    mHandler.removeCallbacks(hideActionBarRunnable);
+                    mHandler.removeCallbacks(showActionBarRunnable);
 
+                    mHandler.postDelayed(hideActionBarRunnable, 200);
 
-        //TODO:Add code for hiding the actionbar as soon as the user scrolls around in the map.
+                    mHandler.postDelayed(showActionBarRunnable, DateUtils.SECOND_IN_MILLIS * 7);
+                }
+                return false;
+            }
+        });
 
         // We can only get the height of the actionbar after the layout has been performed
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -64,37 +68,33 @@ public class OsmFragment extends Fragment{
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
 
-                TextView headerView = (TextView) getView().findViewById(R.id.actionbar_header_overlay_buffer);
-                int height = ((ActionBarActivity)getActivity()).getSupportActionBar().getHeight();
-                headerView.setHeight(height);
-                headerView.setText("Placeholder");
-
-                setBoundingBox();
+                centerMap();
             }
         });
 
         return view;
     }
 
-    private void setBoundingBox() {
-        BoundingBoxE6 boundingBoxE6 = new BoundingBoxE6(57.25, 15.3, 56.45, 14.4);
-        //this.mMapView.zoomToBoundingBox(boundingBoxE6);
-        this.mMapView.setScrollableAreaLimit(boundingBoxE6);
-        Location lastKnownLocation = ((LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE)).getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+    private Runnable hideActionBarRunnable = new Runnable() {
+        @Override
+        public void run() {
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null)
+                activity.showActionBar(false);
+        }
+    };
 
-        if (lastKnownLocation != null)
-            mMapView.getController().setCenter(new GeoPoint(lastKnownLocation));
-        else
-            mMapView.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
+    private Runnable showActionBarRunnable = new Runnable() {
+        @Override
+        public void run() {
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null)
+                activity.showActionBar(true);
+        }
+    };
 
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setHardwareAccelerationOff()
-    {
-        // Turn off hardware acceleration here, or in manifest
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            mMapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+    private void centerMap() {
+        mMapView.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
     }
 
     @Override
