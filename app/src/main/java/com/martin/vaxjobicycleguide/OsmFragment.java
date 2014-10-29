@@ -57,7 +57,6 @@ public class OsmFragment extends Fragment{
             }
         });
 
-        // We can only get the height of the actionbar after the layout has been performed
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

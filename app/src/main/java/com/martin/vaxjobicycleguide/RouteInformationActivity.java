@@ -1,30 +1,39 @@
 package com.martin.vaxjobicycleguide;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
-import android.widget.Gallery;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.martin.vaxjobicycleguide.ui.NotifyingScrollView;
+import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 import com.squareup.picasso.Picasso;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.PathOverlay;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -34,6 +43,7 @@ public class RouteInformationActivity extends ActionBarActivity {
 
     private Route mRoute;
     private Drawable mActionBarBackgroundDrawable;
+    private VaxjoBikeGuideMapView mMapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +61,8 @@ public class RouteInformationActivity extends ActionBarActivity {
         if (bundle != null) {
             this.mRoute = bundle.getParcelable(EXTRA_ROUTE);
             updateInformation();
+            // TODO: Add a correct name here
+            downloadGPXFile(mRoute.gpx, "test.gpx");
         }
 
         mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_solid_vaxjobikeguide);
@@ -67,11 +79,25 @@ public class RouteInformationActivity extends ActionBarActivity {
             mActionBarBackgroundDrawable.setCallback(mDrawableCallback);
         }
 
-        Gallery imageGallery = (Gallery) findViewById(R.id.image_gallery);
-        if (mRoute.photos != null && mRoute.photos.size() != 0)
-            imageGallery.setAdapter(new PhotoArrayAdapter(this, R.layout.list_item_photo, this.mRoute.photos));
-        else
-            imageGallery.setVisibility(View.GONE);
+        this.mMapView = (VaxjoBikeGuideMapView) findViewById(R.id.map_view);
+
+        mMapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    //noinspection deprecation
+                    mMapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    mMapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                centerMap();
+            }
+        });
+    }
+
+    private void centerMap() {
+        mMapView.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
     }
 
     @Override
@@ -180,5 +206,72 @@ public class RouteInformationActivity extends ActionBarActivity {
 
             return rowView;
         }
+    }
+
+    private void updatePathOverlay(List<GpxParser.Entry> entries) {
+        PathOverlay pathOverlay = new PathOverlay(getResources().getColor(R.color.pink_500), this);
+        for (GpxParser.Entry entry : entries) {
+            pathOverlay.addPoint((int)(entry.latitude * 1e6), (int)(entry.longitude * 1e6));
+        }
+
+        this.mMapView.getOverlays().add(pathOverlay);
+    }
+
+    private void downloadGPXFile(final String downloadString, final String fileName) {
+        URL url;
+        try {
+            url = new URL(downloadString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        new AsyncTask<URL, Void, List<GpxParser.Entry>>() {
+            @Override
+            protected List<GpxParser.Entry> doInBackground(URL... url) {
+                File path = getDownloadFolderPath();
+                File file = new File(path, fileName);
+                // If the file already exists and was updated within the last day
+                long compareDate = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
+                if (file.exists() && file.lastModified() > compareDate) {
+                    return parseFile(file);
+                } else if (FileDownloader.DownloadFile(url[0], file)) {
+                    return parseFile(file);
+                } else {
+                    return null;
+                }
+            }
+
+            private List<GpxParser.Entry> parseFile(final File file) {
+                GpxParser parser = new GpxParser();
+                try {
+                    return parser.parse(new FileInputStream(file));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            private File getDownloadFolderPath() {
+                File path;
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    path = getExternalFilesDir("gpx");
+                } else {
+                    path = new File(getFilesDir(), "gpx");
+                }
+
+                if (!path.exists())
+                    path.mkdirs();
+
+                return path;
+            }
+
+            protected void onPostExecute(List<GpxParser.Entry> entries) {
+                if (entries != null) {
+                    updatePathOverlay(entries);
+                }
+            }
+        }.execute(url);
     }
 }
