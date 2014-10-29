@@ -23,15 +23,13 @@ import com.martin.vaxjobicycleguide.ui.NotifyingScrollView;
 import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 import com.squareup.picasso.Picasso;
 
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
-import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -61,8 +59,11 @@ public class RouteInformationActivity extends ActionBarActivity {
         if (bundle != null) {
             this.mRoute = bundle.getParcelable(EXTRA_ROUTE);
             updateInformation();
-            // TODO: Add a correct name here
-            downloadGPXFile(mRoute.gpx, "test.gpx");
+
+            if (mRoute.gpx != null) {
+                String fileName = mRoute.gpx.substring(mRoute.gpx.lastIndexOf('/'));
+                downloadGPXFile(mRoute.gpx, fileName);
+            }
         }
 
         mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_solid_vaxjobikeguide);
@@ -209,12 +210,37 @@ public class RouteInformationActivity extends ActionBarActivity {
     }
 
     private void updatePathOverlay(List<GpxParser.Entry> entries) {
+        if (entries == null || entries.size() == 0)
+            return;
+
+        GpxParser.Entry firstEntry = entries.get(0);
+        double minLatitude = firstEntry.latitude;
+        double maxLatitude = firstEntry.latitude;
+        double minLongitude = firstEntry.longitude;
+        double maxLongitude = firstEntry.longitude;
+
         PathOverlay pathOverlay = new PathOverlay(getResources().getColor(R.color.pink_500), this);
         for (GpxParser.Entry entry : entries) {
             pathOverlay.addPoint((int)(entry.latitude * 1e6), (int)(entry.longitude * 1e6));
+
+            if (entry.latitude < minLatitude)
+                minLatitude = entry.latitude;
+
+            if (entry.latitude > maxLatitude)
+                maxLatitude = entry.latitude;
+
+            if (entry.longitude < minLongitude)
+                minLongitude = entry.longitude;
+
+            if (entry.longitude > maxLongitude)
+                maxLongitude = entry.longitude;
         }
 
         this.mMapView.getOverlays().add(pathOverlay);
+
+        BoundingBoxE6 boundingBoxE6 = new BoundingBoxE6(maxLatitude, maxLongitude, minLatitude, minLongitude);
+        this.mMapView.zoomToBoundingBox(boundingBoxE6);
+        this.mMapView.setScrollableAreaLimit(boundingBoxE6);
     }
 
     private void downloadGPXFile(final String downloadString, final String fileName) {
@@ -245,7 +271,7 @@ public class RouteInformationActivity extends ActionBarActivity {
             private List<GpxParser.Entry> parseFile(final File file) {
                 GpxParser parser = new GpxParser();
                 try {
-                    return parser.parse(new FileInputStream(file));
+                    return parser.parse(new BufferedInputStream(new FileInputStream(file)));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
