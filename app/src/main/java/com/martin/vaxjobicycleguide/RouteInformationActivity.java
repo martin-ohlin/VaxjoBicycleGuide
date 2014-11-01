@@ -204,15 +204,32 @@ public class RouteInformationActivity extends ActionBarActivity {
                 .into(bannerImageView);
 
         ((TextView)findViewById(R.id.description)).setText(this.mRoute.description);
-        //((TextView)findViewById(R.id.type)).setText(this.mRoute.type);
+        ((TextView)findViewById(R.id.type)).setText(getTypeString(mRoute.type));
         ((TextView)findViewById(R.id.length)).setText(this.mRoute.distance);
         //((TextView)findViewById(R.id.rating)).setText(this.mRoute.rating);
         ((TextView)findViewById(R.id.signs)).setText(this.mRoute.signs);
-        //((TextView)findViewById(R.id.terrain)).setText();
+        ((TextView)findViewById(R.id.terrain)).setText(getTerrainString(mRoute));
 
         String createdBy = String.format(getResources().getString(R.string.created_by), this.mRoute.ownerName);
         ((TextView)findViewById(R.id.created_by_name)).setText(createdBy);
         ((TextView)findViewById(R.id.created_by_description)).setText(this.mRoute.ownerDescription);
+    }
+
+    private String getTypeString(int type) {
+        int stringResource = -1;
+        if(type == 0) {
+            stringResource = R.string.type_0;
+        } else if (type == 1) {
+            stringResource = R.string.type_1;
+        } else if (type == 2) {
+            stringResource = R.string.type_2;
+        }
+
+        return getString(stringResource);
+    }
+
+    private String getTerrainString(Route route) {
+        return route.asphalt + "/" + route.gravel.intValue() + "/" + route.trail.intValue();
     }
 
     private class PhotoArrayAdapter extends ArrayAdapter<String> {
