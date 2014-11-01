@@ -1,6 +1,12 @@
 package com.martin.vaxjobicycleguide;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -14,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -34,14 +41,28 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-
+//TODO:Add the possibility to open the map in a larger view
 public class RouteInformationActivity extends ActionBarActivity {
 
     public static final String EXTRA_ROUTE = "EXTRA_ROUTE";
 
     private Route mRoute;
     private Drawable mActionBarBackgroundDrawable;
-    private VaxjoBikeGuideMapView mMapView;
+    private VaxjoBikeGuideMapView mMapViewThumbnail;
+    private VaxjoBikeGuideMapView mMapViewFull;
+
+    private boolean mMapIsVisible;
+    private float mStartScale;
+    private Rect mStartBounds;
+
+    // Hold a reference to the current animator,
+    // so that it can be canceled mid-way.
+    private Animator mCurrentAnimator;
+
+    // The system "short" animation time duration, in milliseconds. This
+    // duration is ideal for subtle animations or animations that occur
+    // very frequently.
+    private int mShortAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,25 +101,38 @@ public class RouteInformationActivity extends ActionBarActivity {
             mActionBarBackgroundDrawable.setCallback(mDrawableCallback);
         }
 
-        this.mMapView = (VaxjoBikeGuideMapView) findViewById(R.id.map_view);
+        this.mMapViewThumbnail = (VaxjoBikeGuideMapView) findViewById(R.id.map_view_thumbnail);
+        this.mMapViewFull = (VaxjoBikeGuideMapView) findViewById(R.id.map_view_full);
 
-        mMapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mMapViewThumbnail.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                     //noinspection deprecation
-                    mMapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    mMapViewThumbnail.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 } else {
-                    mMapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mMapViewThumbnail.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
 
                 centerMap();
             }
         });
+
+        mMapViewThumbnail.getOverlays().add(new ClickListenerOverlay(this, new ClickListenerOverlay.OnSingleTapUpListener() {
+            @Override
+            public void onSingleTapUp() {
+                zoomMapFromThumb();
+            }
+        }));
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
     private void centerMap() {
-        mMapView.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
+        //TODO: Define these coordinates somewhere
+        mMapViewThumbnail.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
+        mMapViewFull.getController().setCenter(new GeoPoint(Location.convert("56:52.591"), Location.convert("14:48.415")));
     }
 
     @Override
@@ -110,6 +144,15 @@ public class RouteInformationActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (this.mMapIsVisible) {
+            zoomMapToThumb();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener = new NotifyingScrollView.OnScrollChangedListener() {
@@ -236,11 +279,15 @@ public class RouteInformationActivity extends ActionBarActivity {
                 maxLongitude = entry.longitude;
         }
 
-        this.mMapView.getOverlays().add(pathOverlay);
+        this.mMapViewThumbnail.getOverlays().add(pathOverlay);
+        this.mMapViewFull.getOverlays().add(pathOverlay);
 
         BoundingBoxE6 boundingBoxE6 = new BoundingBoxE6(maxLatitude, maxLongitude, minLatitude, minLongitude);
-        this.mMapView.zoomToBoundingBox(boundingBoxE6);
-        this.mMapView.setScrollableAreaLimit(boundingBoxE6);
+        this.mMapViewThumbnail.zoomToBoundingBox(boundingBoxE6);
+        this.mMapViewThumbnail.setScrollableAreaLimit(boundingBoxE6);
+
+        this.mMapViewFull.zoomToBoundingBox(boundingBoxE6);
+        //this.mMapViewFull.setScrollableAreaLimit(boundingBoxE6);
     }
 
     private void downloadGPXFile(final String downloadString, final String fileName) {
@@ -299,5 +346,136 @@ public class RouteInformationActivity extends ActionBarActivity {
                 }
             }
         }.execute(url);
+    }
+
+    private void zoomMapToThumb() {
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+        // Animate the four positioning/sizing properties in parallel,
+        // back to their original values.
+        AnimatorSet set = new AnimatorSet();
+        set.play(ObjectAnimator
+                .ofFloat(mMapViewFull, View.X, mStartBounds.left))
+                .with(ObjectAnimator
+                        .ofFloat(mMapViewFull,
+                                View.Y,mStartBounds.top))
+                .with(ObjectAnimator
+                        .ofFloat(mMapViewFull,
+                                View.SCALE_X, mStartScale))
+                .with(ObjectAnimator
+                        .ofFloat(mMapViewFull,
+                                View.SCALE_Y, mStartScale));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mMapViewThumbnail.setAlpha(1f);
+                mMapViewFull.setVisibility(View.GONE);
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mMapViewThumbnail.setAlpha(1f);
+                mMapViewFull.setVisibility(View.GONE);
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mMapIsVisible = false;
+        mCurrentAnimator = set;
+    }
+
+    private void zoomMapFromThumb() {
+        // If there's an animation in progress, cancel it
+        // immediately and proceed with this one.
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+        // Calculate the starting and ending bounds for the zoomed-in image.
+        // This step involves lots of math. Yay, math.
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        // The start bounds are the global visible rectangle of the thumbnail,
+        // and the final bounds are the global visible rectangle of the container
+        // view. Also set the container view's offset as the origin for the
+        // bounds, since that's the origin for the positioning animation
+        // properties (X, Y).
+        mMapViewThumbnail.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.container)
+                .getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        // Adjust the start bounds to be the same aspect ratio as the final
+        // bounds using the "center crop" technique. This prevents undesirable
+        // stretching during the animation. Also calculate the start scaling
+        // factor (the end scaling factor is always 1.0).
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation
+        // begins, it will position the zoomed-in view in the place of the
+        // thumbnail.
+        mMapViewThumbnail.setAlpha(0f);
+        mMapViewFull.setVisibility(View.VISIBLE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations
+        // to the top-left corner of the zoomed-in view (the default
+        // is the center of the view).
+        mMapViewFull.setPivotX(0f);
+        mMapViewFull.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and
+        // scale properties (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(mMapViewFull, View.X,
+                        startBounds.left, finalBounds.left))
+                .with(ObjectAnimator.ofFloat(mMapViewFull, View.Y,
+                        startBounds.top, finalBounds.top))
+                .with(ObjectAnimator.ofFloat(mMapViewFull, View.SCALE_X,
+                        startScale, 1f)).with(ObjectAnimator.ofFloat(mMapViewFull,
+                View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+        mMapIsVisible = true;
+
+        this.mStartScale = startScale;
+        this.mStartBounds = startBounds;
     }
 }
