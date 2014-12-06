@@ -32,6 +32,9 @@ public class VaxjoBikeGuideMapView extends MapView {
     }
 
     private void initialize() {
+        if (isInEditMode())
+            return;
+
         this.setMultiTouchControls(true);
         this.getController().setZoom(12);
 

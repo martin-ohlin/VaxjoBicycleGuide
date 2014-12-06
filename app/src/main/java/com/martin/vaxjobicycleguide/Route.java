@@ -18,7 +18,7 @@ import java.util.List;
 public class Route implements Parcelable {
 
     //public boolean active;
-    public Double asphalt;
+    public String asphalt;
     public String banner;
     public String description;
     public String distance;
@@ -38,7 +38,7 @@ public class Route implements Parcelable {
     public String ownerDescription;
 
     public Route(ParseObject parseRoute) {
-        this.asphalt = parseRoute.getDouble("Asphalt"); // Converted
+        this.asphalt = parseRoute.getString("Asphalt"); // Converted
         this.banner = parseRoute.getString("Banner");
         this.description = parseRoute.getString("Description");
         this.distance = parseRoute.getString("Distance");
@@ -81,7 +81,7 @@ public class Route implements Parcelable {
     }
 
     private Route(Parcel in) {
-        this.asphalt = (Double) in.readValue(Double.class.getClassLoader());
+        this.asphalt = in.readString();
         this.banner = in.readString();
         this.description = in.readString();
         this.distance = in.readString();
@@ -108,7 +108,7 @@ public class Route implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(asphalt);
+        dest.writeString(asphalt);
         dest.writeString(banner);
         dest.writeString(description);
 

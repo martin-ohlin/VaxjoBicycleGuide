@@ -13,5 +13,7 @@
     <string name="rating">Svårighet</string>
     <string name="terrain">Asfalt/Grus/Stig</string>
     <string name="signs">Markerad</string>
-
+    <string name="type_0">Mountainbike</string>
+    <string name="type_1">Landsväg</string>
+    <string name="type_2">Grusväg/Mix</string>
 </resources>
