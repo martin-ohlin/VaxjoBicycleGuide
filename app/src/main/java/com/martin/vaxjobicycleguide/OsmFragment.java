@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +18,11 @@ import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+// TODO: Use this one instead of MyLocationNewOverlay and feed it with our own location data
+//import org.osmdroid.views.overlay.DirectedLocationOverlay
+
+//TODO: Use this to display a path
+import org.osmdroid.views.overlay.PathOverlay;
 
 public class OsmFragment extends Fragment{
     private VaxjoBikeGuideMapView mMapView;
