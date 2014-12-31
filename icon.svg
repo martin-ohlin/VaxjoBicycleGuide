@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512"
+   height="512"
+   id="svg3181"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="logga2.svg">
+  <defs
+     id="defs3183" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.47369623"
+     inkscape:cx="618.4047"
+     inkscape:cy="-38.923099"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1855"
+     inkscape:window-height="1176"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3186">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-540.3622)">
+    <path
+       sodipodi:nodetypes="ssssssssssssssssscssssssss"
+       style="fill:#4dd0e1;fill-opacity:1"
+       d="m 244.89897,862.55606 c -19.80804,-21.33568 -41.31468,-48.88384 -59.41511,-76.10613 -24.24296,-36.46003 -38.93815,-67.72318 -45.86237,-97.57004 -2.14163,-9.23117 -2.47596,-12.60167 -2.52523,-25.45701 -0.0427,-11.26471 0.34276,-16.64719 1.61027,-22.4502 4.87009,-22.29877 15.38296,-42.15938 31.02499,-58.61133 10.4149,-10.95418 20.82063,-18.57443 34.64014,-25.3672 18.82367,-9.25255 35.69516,-12.79913 56.12539,-11.79832 29.97389,1.46837 55.35134,12.70718 77.03272,34.11533 21.52446,21.2534 33.30763,47.39577 34.87571,77.37664 1.31688,25.17775 -5.32654,50.31127 -22.54962,85.31075 -12.44407,25.28769 -25.86524,46.77848 -46.17476,73.93781 -19.21226,25.692 -45.42957,55.82429 -48.57106,55.82429 -0.95783,0 -5.29613,-3.91064 -10.21107,-9.20459 z m 29.51727,-130.88832 c 12.16165,-3.86895 20.40457,-8.83087 29.4861,-17.74956 13.22005,-12.98291 19.29252,-27.03394 20.0931,-46.49315 0.41158,-10.00425 0.20496,-12.82095 -1.41586,-19.30716 -5.14056,-20.57076 -18.36576,-36.92521 -37.38725,-46.2337 -10.69415,-5.23329 -18.25856,-6.95693 -30.53226,-6.95693 -12.28017,0 -19.84496,1.72508 -30.53225,6.96261 -14.43759,7.07531 -25.10338,17.57717 -31.94086,31.44977 -8.81585,17.88654 -9.64878,40.12748 -2.17099,57.97826 4.55772,10.88017 13.97899,22.79571 23.78468,30.0816 6.62423,4.92182 18.58646,10.08552 27.9058,12.04582 7.06196,1.48546 25.62337,0.47681 32.70979,-1.77756 z"
+       id="path4254-5"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:44.89477539px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4dd0e1;fill-opacity:1;stroke:none;font-family:Coffee Service;-inkscape-font-specification:Coffee Service"
+       x="9.8337383"
+       y="1014.1741"
+       id="text2985-3-4-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2987-0-78-6"
+         x="9.8337383"
+         y="1014.1741"
+         style="font-size:161.62117004px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#4dd0e1;fill-opacity:1;font-family:Novecento wide Normal;-inkscape-font-specification:Novecento wide Normal">Växjö</tspan></text>
+  </g>
+</svg>
