@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver;
 import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 // TODO: Use this one instead of MyLocationNewOverlay and feed it with our own location data
@@ -41,7 +42,6 @@ public class OsmFragment extends Fragment{
         // Add users location overlay
         this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context), this.mMapView);
         this.mMapView.getOverlays().add(this.mLocationOverlay);
-
 
         //Hides the actionbar for 7 seconds if the user touches the map.
         //Adds a small delay to the hiding to let the activity detect if this is maybe
