@@ -30,6 +30,7 @@ import com.martin.vaxjobicycleguide.ui.NotifyingScrollView;
 import com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView;
 import com.squareup.picasso.Picasso;
 
+import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
@@ -279,7 +280,11 @@ public class RouteInformationActivity extends ActionBarActivity {
         double minLongitude = firstEntry.longitude;
         double maxLongitude = firstEntry.longitude;
 
-        PathOverlay pathOverlay = new PathOverlay(getResources().getColor(R.color.pink_500), this);
+        //PathOverlay pathOverlay = new PathOverlay(getResources().getColor(R.color.pink_500), this);
+        PathOverlay pathOverlay = new PathOverlay(
+                getResources().getColor(R.color.pink_500),
+                4.0f,
+                new DefaultResourceProxyImpl(this));
         for (GpxParser.Entry entry : entries) {
             pathOverlay.addPoint((int)(entry.latitude * 1e6), (int)(entry.longitude * 1e6));
 
