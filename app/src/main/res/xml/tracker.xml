@@ -16,4 +16,7 @@
     <screenName name="com.martin.vaxjobicycleguide.RouteInformationActivity">
         RouteInformationActivity
     </screenName>
+    <screenName name="com.martin.vaxjobicycleguide.AboutActivity">
+        AboutActivity
+    </screenName>
 </resources>
