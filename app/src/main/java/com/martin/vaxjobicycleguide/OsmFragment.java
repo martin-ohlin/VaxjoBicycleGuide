@@ -43,7 +43,7 @@ public class OsmFragment extends Fragment{
         this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context), this.mMapView);
         this.mMapView.getOverlays().add(this.mLocationOverlay);
 
-        //Hides the actionbar for 7 seconds if the user touches the map.
+        //Hides the actionbar for 5 seconds if the user touches the map.
         //Adds a small delay to the hiding to let the activity detect if this is maybe
         //a touch that will drag the page away.
         this.mMapView.setOnTouchListener(new View.OnTouchListener() {
@@ -55,7 +55,7 @@ public class OsmFragment extends Fragment{
 
                     mHandler.postDelayed(hideActionBarRunnable, 200);
 
-                    mHandler.postDelayed(showActionBarRunnable, DateUtils.SECOND_IN_MILLIS * 7);
+                    mHandler.postDelayed(showActionBarRunnable, DateUtils.SECOND_IN_MILLIS * 5);
                 }
                 return false;
             }

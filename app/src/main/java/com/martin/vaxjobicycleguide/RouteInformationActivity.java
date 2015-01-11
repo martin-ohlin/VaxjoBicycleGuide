@@ -34,6 +34,8 @@ import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -51,6 +53,7 @@ public class RouteInformationActivity extends ActionBarActivity {
     private Drawable mActionBarBackgroundDrawable;
     private VaxjoBikeGuideMapView mMapViewThumbnail;
     private VaxjoBikeGuideMapView mMapViewFull;
+    private MyLocationNewOverlay mLocationOverlay;
 
     private boolean mMapIsVisible;
     private float mStartScale;
@@ -126,8 +129,26 @@ public class RouteInformationActivity extends ActionBarActivity {
             }
         }));
 
+        // Add users location overlay
+        this.mLocationOverlay = new MyLocationNewOverlay(this, new GpsMyLocationProvider(this), mMapViewFull);
+        this.mMapViewFull.getOverlays().add(this.mLocationOverlay);
+
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.mLocationOverlay.disableMyLocation();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        this.mLocationOverlay.enableMyLocation();
     }
 
     private void centerMap() {
@@ -231,43 +252,6 @@ public class RouteInformationActivity extends ActionBarActivity {
 
     private String getTerrainString(Route route) {
         return route.asphalt + "/" + route.gravel.intValue() + "/" + route.trail.intValue();
-    }
-
-    private class PhotoArrayAdapter extends ArrayAdapter<String> {
-        private final Context mContext;
-        private final int imageWidth;
-
-        public PhotoArrayAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
-            this.mContext = context;
-            final int width = context.getResources().getDisplayMetrics().widthPixels;
-            final int height = context.getResources().getDisplayMetrics().heightPixels;
-            // Take the largest so that it will fit both in portrait and landscape mode
-            this.imageWidth = width >= height ? width : height;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View rowView = convertView;
-            if (rowView == null) {
-                LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                rowView = inflater.inflate(R.layout.list_item_photo, parent, false);
-                //((ImageView) rowView).getLayoutParams().width = imageWidth - 100;
-            }
-
-            String imageUrl = getItem(position);
-
-            String urlForPreScaledBanner = String.format("http://www.vaxjobicycleguide.se/php/timthumb.php?src=%1$s&w=%2$d", imageUrl, imageWidth);
-
-            ImageView bannerImageView = (ImageView) rowView.findViewById(R.id.list_item_photo);
-            Picasso.with(mContext)
-                    .load(urlForPreScaledBanner)
-                    .fit()
-                    .centerInside()
-                    .into(bannerImageView);
-
-            return rowView;
-        }
     }
 
     private void updatePathOverlay(List<GpxParser.Entry> entries) {

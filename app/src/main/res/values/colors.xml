@@ -4,5 +4,6 @@
     <color name="cyan_500">#00bcd4</color>
     <color name="cyan_600">#00acc1</color>
     <color name="pink_500">#e91e63</color>
+    <color name="map_background">#e8e2d3</color>
 
 </resources>

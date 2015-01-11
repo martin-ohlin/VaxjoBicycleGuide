@@ -8,6 +8,7 @@
     <com.martin.vaxjobicycleguide.ui.VaxjoBikeGuideMapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/map_background"/>
 
 </LinearLayout>
